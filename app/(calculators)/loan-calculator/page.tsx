@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { Metadata } from "next";
 import {
   CalculatorShell,
   CalculatorLayout,
@@ -12,6 +11,7 @@ import {
   ResultTable,
   ResetButton,
   InfoBox,
+  SeoContent,
   type TableColumn,
 } from "@/components/calculator";
 import {
@@ -20,14 +20,17 @@ import {
   generateYearlyAmortization,
   LOAN_TERM_OPTIONS,
 } from "@/lib/calculators/loan";
-import { formatCurrency, formatPercent, formatNumber } from "@/lib/formatters";
+import { formatCurrency, formatPercent } from "@/lib/formatters";
 import { getToolBySlug } from "@/lib/constants";
+import { GEO_CONFIGS } from "@/lib/geo";
+import { getSeoContent } from "@/lib/seo";
 
 const tool = getToolBySlug("loan-calculator")!;
+const geo  = GEO_CONFIGS.global;
 
 const DEFAULTS = {
-  principal: "10000",
-  rate:      "7.5",
+  principal:  String(geo.defaults.loanAmount),
+  rate:       String(geo.defaults.annualRate),
   termMonths: "36",
 };
 
@@ -50,10 +53,10 @@ const YEARLY_COLS: TableColumn[] = [
 ];
 
 export default function LoanCalculatorPage() {
-  const [principal, setPrincipal] = useState(DEFAULTS.principal);
-  const [rate,      setRate]      = useState(DEFAULTS.rate);
+  const [principal,  setPrincipal]  = useState(DEFAULTS.principal);
+  const [rate,       setRate]       = useState(DEFAULTS.rate);
   const [termMonths, setTermMonths] = useState(DEFAULTS.termMonths);
-  const [tableView, setTableView] = useState<TableView>("yearly");
+  const [tableView,  setTableView]  = useState<TableView>("yearly");
 
   const inputs = useMemo(() => ({
     principal:  parseFloat(principal) || 0,
@@ -61,26 +64,26 @@ export default function LoanCalculatorPage() {
     termMonths: parseInt(termMonths)  || 0,
   }), [principal, rate, termMonths]);
 
-  const summary      = useMemo(() => calculateLoanSummary(inputs),        [inputs]);
-  const monthlyRows  = useMemo(() => generateAmortization(inputs),        [inputs]);
-  const yearlyRows   = useMemo(() => generateYearlyAmortization(inputs),  [inputs]);
+  const summary     = useMemo(() => calculateLoanSummary(inputs),       [inputs]);
+  const monthlyRows = useMemo(() => generateAmortization(inputs),       [inputs]);
+  const yearlyRows  = useMemo(() => generateYearlyAmortization(inputs), [inputs]);
 
-  const fmtRow = (v: number) => formatCurrency(v);
+  const fmt = (v: number) => formatCurrency(v, geo.locale, geo.currency);
 
   const tableRows = tableView === "monthly"
     ? monthlyRows.map((r) => ({
         month:     r.month,
-        payment:   fmtRow(r.payment),
-        principal: fmtRow(r.principal),
-        interest:  fmtRow(r.interest),
-        balance:   fmtRow(r.balance),
+        payment:   fmt(r.payment),
+        principal: fmt(r.principal),
+        interest:  fmt(r.interest),
+        balance:   fmt(r.balance),
       }))
     : yearlyRows.map((r) => ({
         year:           `Year ${r.year}`,
-        totalPayment:   fmtRow(r.totalPayment),
-        totalPrincipal: fmtRow(r.totalPrincipal),
-        totalInterest:  fmtRow(r.totalInterest),
-        closingBalance: fmtRow(r.closingBalance),
+        totalPayment:   fmt(r.totalPayment),
+        totalPrincipal: fmt(r.totalPrincipal),
+        totalInterest:  fmt(r.totalInterest),
+        closingBalance: fmt(r.closingBalance),
       }));
 
   const reset = () => {
@@ -88,6 +91,8 @@ export default function LoanCalculatorPage() {
     setRate(DEFAULTS.rate);
     setTermMonths(DEFAULTS.termMonths);
   };
+
+  const seoContent = getSeoContent("loan-calculator", geo);
 
   return (
     <CalculatorShell tool={tool}>
@@ -98,7 +103,7 @@ export default function LoanCalculatorPage() {
               label="Loan amount"
               value={principal}
               onChange={setPrincipal}
-              prefix="$"
+              prefix={geo.currencySymbol}
               min={0}
               placeholder="10,000"
             />
@@ -106,10 +111,7 @@ export default function LoanCalculatorPage() {
               label="Annual interest rate"
               value={parseFloat(rate) || 0}
               onChange={(v) => setRate(String(v))}
-              min={0.1}
-              max={30}
-              step={0.1}
-              suffix="%"
+              min={0.1} max={30} step={0.1} suffix="%"
             />
             <SelectField
               label="Loan term"
@@ -127,51 +129,30 @@ export default function LoanCalculatorPage() {
             <ResultCard
               title="Loan Summary"
               items={[
-                {
-                  label:     "Monthly payment",
-                  value:     formatCurrency(summary.monthlyPayment),
-                  highlight: true,
-                  sublabel:  `for ${termMonths} months`,
-                },
-                {
-                  label: "Total payment",
-                  value: formatCurrency(summary.totalPayment),
-                },
-                {
-                  label: "Total interest",
-                  value: formatCurrency(summary.totalInterest),
-                },
-                {
-                  label: "Interest rate",
-                  value: formatPercent(parseFloat(rate) || 0),
-                },
+                { label: "Monthly payment",  value: fmt(summary.monthlyPayment),  highlight: true, sublabel: `for ${termMonths} months` },
+                { label: "Total payment",    value: fmt(summary.totalPayment)    },
+                { label: "Total interest",   value: fmt(summary.totalInterest)   },
+                { label: "Interest rate",    value: formatPercent(parseFloat(rate) || 0) },
               ]}
             />
             <InfoBox variant="info" title="How this is calculated">
-              Uses the standard EMI formula: monthly payment = P × r(1+r)ⁿ / ((1+r)ⁿ−1),
-              where P is principal, r is monthly rate, and n is term in months.
+              Uses the standard EMI formula: monthly payment = P × r(1+r)ⁿ /
+              ((1+r)ⁿ−1), where P is principal, r is monthly rate, n is term in months.
             </InfoBox>
           </>
         }
         below={
           inputs.principal > 0 && inputs.termMonths > 0 ? (
             <div className="space-y-3">
-              {/* Toggle monthly / yearly */}
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-700">Amortization schedule</span>
                 <div className="flex rounded-lg border border-gray-200 overflow-hidden ml-auto">
                   {(["yearly", "monthly"] as TableView[]).map((v) => (
-                    <button
-                      key={v}
-                      onClick={() => setTableView(v)}
+                    <button key={v} onClick={() => setTableView(v)}
                       className={`px-3 py-1.5 text-xs font-medium transition-colors capitalize ${
-                        tableView === v
-                          ? "bg-green-600 text-white"
-                          : "bg-white text-gray-600 hover:bg-gray-50"
+                        tableView === v ? "bg-green-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50"
                       }`}
-                    >
-                      {v}
-                    </button>
+                    >{v}</button>
                   ))}
                 </div>
               </div>
@@ -185,6 +166,7 @@ export default function LoanCalculatorPage() {
           ) : null
         }
       />
+      <SeoContent content={seoContent} tool={tool} geo={geo} />
     </CalculatorShell>
   );
 }
