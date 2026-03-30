@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://www.calcnest.com
+Host: https://www.moneytoolslab.com
 
 # Sitemaps
-Sitemap: https://www.calcnest.com/sitemap.xml
+Sitemap: https://www.moneytoolslab.com/sitemap.xml

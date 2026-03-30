@@ -2,6 +2,7 @@ import Link from "next/link";
 import { type SeoContent } from "@/lib/seo";
 import { TOOLS, type Tool } from "@/lib/constants";
 import { type GeoConfig, GEO_CONFIGS } from "@/lib/geo";
+import { getPostsForTool, BLOG_CATEGORY_COLORS } from "@/lib/blog";
 
 interface SeoContentBlockProps {
   content: SeoContent;
@@ -19,6 +20,7 @@ export default function SeoContentBlock({
   const relatedTools = content.relatedSlugs
     .map((slug) => TOOLS.find((t) => t.slug === slug))
     .filter(Boolean) as Tool[];
+  const relatedPosts = getPostsForTool(tool.slug);
 
   return (
     <div className="mt-10 space-y-10 border-t border-gray-200 pt-10">
@@ -90,6 +92,49 @@ export default function SeoContentBlock({
                 </span>
               </Link>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Related blog posts */}
+      {relatedPosts.length > 0 && (
+        <div>
+          <h2 className="text-base font-semibold text-gray-900 mb-3">
+            Further reading
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {relatedPosts.map((post) => {
+              const colors = BLOG_CATEGORY_COLORS[post.category];
+              return (
+                <Link
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
+                  className="group flex flex-col gap-2 p-4 bg-white border border-gray-200 rounded-xl hover:border-green-300 hover:shadow-sm transition-all"
+                >
+                  {/* Category tag + read time */}
+                  <div className="flex items-center justify-between">
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${colors.bg} ${colors.text}`}>
+                      {post.category}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {post.readingTime} min read
+                    </span>
+                  </div>
+                  {/* Title */}
+                  <p className="text-sm font-medium text-gray-800 group-hover:text-green-700 transition-colors leading-snug line-clamp-2">
+                    {post.title}
+                  </p>
+                  {/* Excerpt */}
+                  <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+                    {post.excerpt}
+                  </p>
+                  {/* Read link */}
+                  <span className="text-xs font-medium text-green-600 group-hover:text-green-700 mt-auto pt-1">
+                    Read article →
+                  </span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}

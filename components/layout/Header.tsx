@@ -20,12 +20,23 @@ export default function Header() {
             href="/"
             className="flex items-center gap-2 font-bold text-gray-900 hover:text-green-600 transition-colors"
           >
-            <span className="text-xl">🧮</span>
-            <span className="text-base">FinanceCalc</span>
+            <span className="text-xl"></span>
+            <span className="text-base">MoneyToolsLab</span>
+          
           </Link>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
+            <Link
+              href="/blog"
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                pathname.startsWith("/blog")
+                  ? "bg-green-50 text-green-700"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              }`}
+            >
+              Blog
+            </Link>
             {CATEGORIES.map((cat) => (
               <div key={cat} className="relative group">
                 <button className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">

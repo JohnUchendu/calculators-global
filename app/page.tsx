@@ -20,7 +20,7 @@ export default function HomePage() {
         <section className="bg-white border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 text-center">
             <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-sm font-medium px-3 py-1 rounded-full mb-4">
-              <span>✓</span> Free · No sign-up · No ads
+              <span>✓</span> Free 
             </div>
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 text-balance">
               Finance & Money Calculators

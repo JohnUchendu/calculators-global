@@ -14,8 +14,8 @@ export default function Footer() {
           {/* Brand column */}
           <div className="col-span-2 sm:col-span-1">
             <Link href="/" className="flex items-center gap-2 font-bold text-gray-900 mb-3">
-              <span className="text-xl">🧮</span>
-              <span>FinanceCalc</span>
+              <span className="text-xl"></span>
+              <span>Moneytoolslab.com</span>
             </Link>
             <p className="text-sm text-gray-500 leading-relaxed">
               Free, fast, and accurate finance and everyday money calculators.
@@ -48,7 +48,7 @@ export default function Footer() {
         {/* Bottom row */}
         <div className="pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-sm text-gray-400">
-            © {currentYear} FinanceCalc. All calculators are for informational
+            © {currentYear} MoneyToolsLab.com. All calculators are for informational
             purposes only.
           </p>
           <div className="flex items-center gap-4">

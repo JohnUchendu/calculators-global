@@ -271,3 +271,15 @@ export const CATEGORY_COLORS: Record<Category, { bg: string; text: string; dot: 
   "Income & Career":    { bg: "bg-rose-50",   text: "text-rose-700",   dot: "bg-rose-500"   },
   "Investment":         { bg: "bg-teal-50",   text: "text-teal-700",   dot: "bg-teal-500"   },
 };
+
+/**
+ * Returns ALL valid slugs — base + geo variants.
+ * Used by generateStaticParams to pre-render every page.
+ * When you add a new tool to TOOLS array, it auto-appears here.
+ */
+export function getAllSlugs(): string[] {
+  const geoSuffixes = ["", "-nigeria", "-uk", "-us", "-canada"];
+  return TOOLS.flatMap((tool) =>
+    geoSuffixes.map((suffix) => `${tool.slug}${suffix}`)
+  );
+}
