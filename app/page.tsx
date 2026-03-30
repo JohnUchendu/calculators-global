@@ -33,9 +33,9 @@ export default function HomePage() {
             {/* Stats row */}
             <div className="flex items-center justify-center gap-8 mt-8">
               {[
-                { value: "20", label: "Calculators" },
-                { value: "6",  label: "Categories"  },
-                { value: "0",  label: "Sign-ups"    },
+                // { value: "20", label: "Calculators" },
+                // { value: "6",  label: "Categories"  },
+                // { value: "0",  label: "Sign-ups"    },
               ].map(({ value, label }) => (
                 <div key={label} className="text-center">
                   <div className="text-2xl font-bold text-gray-900">{value}</div>
