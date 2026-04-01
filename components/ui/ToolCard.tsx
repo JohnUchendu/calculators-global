@@ -13,11 +13,13 @@ export default function ToolCard({ tool }: ToolCardProps) {
       href={`/${tool.slug}`}
       className="group flex flex-col bg-white border border-gray-200 rounded-2xl p-5 hover:border-green-300 hover:shadow-md transition-all duration-200"
     >
-      {/* Icon */}
+      {/* Icon — styled abbreviation pill */}
       <div
-        className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-3 ${colors.bg} group-hover:scale-105 transition-transform duration-200`}
+        className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colors.bg} group-hover:scale-105 transition-transform duration-200`}
       >
-        {tool.icon}
+        <span className={`text-[9px] font-bold tracking-wider uppercase ${colors.text}`}>
+          {tool.icon}
+        </span>
       </div>
 
       {/* Title */}
@@ -32,9 +34,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
 
       {/* Footer */}
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-        <span
-          className={`text-xs font-medium px-2 py-0.5 rounded-full ${colors.bg} ${colors.text}`}
-        >
+        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${colors.bg} ${colors.text}`}>
           {tool.category}
         </span>
         <span className="text-xs text-gray-400 group-hover:text-green-600 transition-colors">
