@@ -1,51 +1,30 @@
-import type { Metadata } from "next";
-import { generateToolMetadata, buildFaqJsonLd } from "@/lib/metadata";
-import { notFound } from "next/navigation";
-import { TOOLS } from "@/lib/constants";
-import { getGeoBySlug } from "@/lib/geo";
+import Header from "@/components/layout/Header";
+import Sidebar from "@/components/layout/Sidebar";
+import Footer from "@/components/layout/Footer";
 
-type Props = {
-  children:  React.ReactNode;
-  params:    Promise<{ slug: string }>;
-};
-
-// ── Metadata ──────────────────────────────────
-export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> }
-): Promise<Metadata> {
-  return generateToolMetadata({ params });
-}
-
-// ── Static params — pre-render all 45 slugs ───
-// Add new slugs here any time — they auto-render
-export { buildStaticParams as generateStaticParams } from "@/lib/metadata";
-
-// ── Layout ────────────────────────────────────
-export default async function ToolLayout({ children, params }: Props) {
-  const { slug } = await params;
-
-  // Validate — 404 if slug matches no known tool
-  const geo      = getGeoBySlug(slug);
-  const baseSlug = geo.key !== "global"
-    ? slug.replace(geo.urlSuffix, "")
-    : slug;
-
-  const toolExists = TOOLS.some((t) => t.slug === baseSlug);
-  if (!toolExists) notFound();
-
-  // FAQ JSON-LD structured data for rich results
-  const faqJsonLd = buildFaqJsonLd(slug);
-
+export default function CalculatorsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <>
-      {/* FAQ structured data — triggers rich snippets in Google */}
-      {faqJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: faqJsonLd }}
-        />
-      )}
-      {children}
-    </>
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <Header />
+
+      <div className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-10">
+        <div className="flex gap-10">
+          <Sidebar />
+
+          {/* Calculator content — white card matching blog article style */}
+          <main className="flex-1 min-w-0">
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
+              {children}
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
   );
 }
