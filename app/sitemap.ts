@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/constants";
 import { GEO_CONFIGS, type GeoKey } from "@/lib/geo";
 
-const BASE_URL = "https://www.calcnest.com";
+const BASE_URL = "https://www.moneytoolslab.com";
 
 const GEO_KEYS: GeoKey[] = ["nigeria", "uk", "us", "canada"];
 
