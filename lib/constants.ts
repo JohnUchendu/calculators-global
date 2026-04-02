@@ -308,6 +308,7 @@ export interface Tool {
   category: Category;
   icon: string;        // emoji — swap for SVG later if needed
   keywords: string[];  // for SEO meta keywords
+  ready?:      boolean;  // ← add this line ADDED 2 april
 }
 
 export const TOOLS: Tool[] = [
@@ -415,6 +416,7 @@ export const TOOLS: Tool[] = [
     category: "Everyday Math",
     icon: "TIP",
     keywords: ["tip calculator", "restaurant tip", "bill split", "gratuity calculator"],
+    ready: false, //new
   },
   {
     slug: "discount-calculator",
@@ -425,6 +427,7 @@ export const TOOLS: Tool[] = [
     category: "Everyday Math",
     icon: "DISC",
     keywords: ["discount calculator", "sale price", "percent off", "savings calculator"],
+    ready: false, //new
   },
   {
     slug: "percentage-calculator",
@@ -435,6 +438,7 @@ export const TOOLS: Tool[] = [
     category: "Everyday Math",
     icon: "PCT",
     keywords: ["percentage calculator", "percent of", "percentage increase", "percentage decrease"],
+    ready: false, //new
   },
   {
     slug: "bmi-calculator",
@@ -445,6 +449,7 @@ export const TOOLS: Tool[] = [
     category: "Everyday Math",
     icon: "BMI",
     keywords: ["BMI calculator", "body mass index", "healthy weight", "overweight calculator"],
+    ready: false, //new
   },
 
   // ── Date & Time ─────────────────────────────
@@ -457,6 +462,7 @@ export const TOOLS: Tool[] = [
     category: "Date & Time",
     icon: "AGE",
     keywords: ["age calculator", "date of birth calculator", "how old am I", "exact age"],
+    ready: false, //new 
   },
   {
     slug: "time-duration-calculator",
@@ -467,6 +473,7 @@ export const TOOLS: Tool[] = [
     category: "Date & Time",
     icon: "DUR",
     keywords: ["time duration calculator", "time between dates", "hours calculator", "elapsed time"],
+    ready: false, //new
   },
   {
     slug: "date-calculator",
@@ -477,6 +484,7 @@ export const TOOLS: Tool[] = [
     category: "Date & Time",
     icon: "DATE",
     keywords: ["date calculator", "add days to date", "date difference", "days from today"],
+    ready: false, //new
   },
 
   // ── Income & Career ─────────────────────────
@@ -489,6 +497,7 @@ export const TOOLS: Tool[] = [
     category: "Income & Career",
     icon: "SAL",
     keywords: ["salary increment calculator", "raise calculator", "pay increase", "promotion salary"],
+    ready: false, //new
   },
   {
     slug: "net-salary-calculator",
@@ -499,6 +508,7 @@ export const TOOLS: Tool[] = [
     category: "Income & Career",
     icon: "NET",
     keywords: ["net salary calculator", "take home pay", "after tax salary", "gross to net"],
+    ready: false, //new
   },
   {
     slug: "budget-planner",
@@ -508,7 +518,8 @@ export const TOOLS: Tool[] = [
       "Plan your monthly budget by entering your income and expenses. See your surplus or deficit at a glance.",
     category: "Income & Career",
     icon: "BDG",
-    keywords: ["budget planner", "monthly budget", "income vs expenses", "budget calculator"],
+    keywords: ["budget planner", "monthly budget", "income vs expenses", "budget calculator"], 
+    ready: false, //new
   },
 
   // ── Investment ──────────────────────────────
@@ -521,6 +532,7 @@ export const TOOLS: Tool[] = [
     category: "Investment",
     icon: "ROI",
     keywords: ["ROI calculator", "return on investment", "investment return", "profit calculator"],
+    ready: false, //new
   },
 ];
 
@@ -565,9 +577,19 @@ export const CATEGORY_COLORS: Record<Category, { bg: string; text: string; dot: 
  * Used by generateStaticParams to pre-render every page.
  * When you add a new tool to TOOLS array, it auto-appears here.
  */
+// export function getAllSlugs(): string[] {
+//   const geoSuffixes = ["", "-nigeria", "-uk", "-us", "-canada"];
+//   return TOOLS.flatMap((tool) =>
+//     geoSuffixes.map((suffix) => `${tool.slug}${suffix}`)
+//   );
+// }
+
+
 export function getAllSlugs(): string[] {
   const geoSuffixes = ["", "-nigeria", "-uk", "-us", "-canada"];
-  return TOOLS.flatMap((tool) =>
-    geoSuffixes.map((suffix) => `${tool.slug}${suffix}`)
-  );
+  return TOOLS
+    .filter((tool) => tool.ready !== false)
+    .flatMap((tool) =>
+      geoSuffixes.map((suffix) => `${tool.slug}${suffix}`)
+    );
 }
